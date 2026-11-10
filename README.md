@@ -1,10 +1,5 @@
 # Eksperimen deteksi jatuh dengan Wi-Fi CSI dan ESP32
-
-Repositori ini dikembangkan oleh Penulis bersama Alvin untuk eksperimen deteksi jatuh berbasis Wi-Fi. Pengujian berawal dari pertanyaan sederhana. Apakah model masih dapat mengenali gerakan jatuh setelah tata letak benda di ruangan berubah? Channel State Information (CSI) akan direkam dengan ESP32. Rekaman akan diolah dan model dilatih di laptop atau PC.
-
-Setelah model mempelajari tata letak baru, kemampuannya mendeteksi jatuh pada tata letak sebelumnya akan diuji kembali. Untuk Experience Replay, tambahan memori dan waktu yang diperlukan selama adaptasi juga akan diukur.
-
-## Rencana kerja
+## To do
 
 Pemeriksa port dan perekam CSI di laptop sudah dapat dijalankan. Sambil menunggu board, alur penyimpanan dapat dicoba dengan berkas uji. Contoh firmware untuk percobaan pertama juga sudah disertakan. [Panduan akuisisi dan uji tanpa board](docs/akuisisi.md)
 
@@ -23,14 +18,6 @@ Pemeriksa port dan perekam CSI di laptop sudah dapat dijalankan. Sambil menunggu
 Varian board, firmware, jumlah peserta dan sesi, rincian perubahan tata letak, serta laju paket masih perlu ditentukan. Pilihan panjang dan tumpang tindih jendela, arsitektur model, ukuran buffer, rasio replay, dan anggaran pelatihan juga masih terbuka.
 
 ## Cara memeriksa port ESP32 di Windows
-
-Di komputer yang belum punya salinan repo, mulai dari PowerShell dengan perintah berikut.
-
-```powershell
-git clone https://github.com/Owen123-lang/esp32-wifi-csi.git
-cd esp32-wifi-csi
-```
-
 1. Dengan board masih terlepas, jalankan skrip ini dan catat port yang muncul.
 
    ```powershell
