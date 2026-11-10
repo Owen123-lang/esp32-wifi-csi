@@ -6,12 +6,14 @@ Setelah model mempelajari tata letak baru, kemampuannya mendeteksi jatuh pada ta
 
 ## Rencana kerja
 
-Saat ini baru skrip pemeriksa port yang siap. Langkah berikutnya adalah menyambungkan board dan mengenali port yang dipakainya.
+Pemeriksa port dan perekam CSI di laptop sudah dapat dijalankan. Sambil menunggu board, alur penyimpanan dapat dicoba dengan berkas uji. Contoh firmware untuk percobaan pertama juga sudah disertakan. [Panduan akuisisi dan uji tanpa board](docs/akuisisi.md)
 
 - [x] **01. Menyiapkan pemeriksaan port di Windows.** Skrip [cek-port.ps1](scripts/cek-port.ps1) menampilkan port serial yang terlihat di Windows dan bisa memeriksa satu port berdasarkan namanya.
 - [ ] **02. Mengenali board yang akan dipakai.** Catat model yang tertulis pada board, port yang muncul saat kabel USB dipasang, dan perangkat yang tersedia sebagai sumber paket Wi-Fi.
 - [ ] **03. Mencoba rekaman pertama di ruangan kosong.** Contoh akuisisi dan firmware dipilih setelah model board diketahui. Targetnya satu rekaman berisi nilai CSI yang bisa dibaca. Catatan sesi mencakup versi firmware, pengaturan Wi-Fi, perangkat pengirim dan penerima, serta satuan waktu.
 - [ ] **04. Membuat perekam CSI di laptop.** Setiap berkas mentah perlu punya ID rekaman, ID sesi, konfigurasi ruangan, dan waktu perekaman. Periksa jumlah paket, jumlah sampel CSI yang valid, serta selang waktu antarsampel. Jika sambungan putus di tengah sesi, rekamannya tetap harus bisa ditelusuri.
+  - [x] Perekam serial, pembacaan ulang berkas, metadata sesi, dan pemeriksaan format diuji di laptop.
+  - [ ] Kualitas rekaman dan selang waktu antarsampel diperiksa dengan ESP32 yang akan dipakai.
 - [ ] **05. Menyiapkan dan menjalankan uji pendahuluan.** Dokumentasikan tata letak A sampai D, posisi perangkat, area gerak, aktivitas, dan cara memberi label. Sebelum melibatkan peserta, pastikan prosedur keselamatan simulasi jatuh dan persetujuan peserta sesuai ketentuan yang berlaku. Hasil uji pendahuluan digunakan untuk menilai apakah kualitas rekaman memadai untuk eksperimen utama.
 - [ ] **06. Mengumpulkan dan membagi rekaman.** Buat daftar rekaman yang memuat ID sesi, kode peserta, lingkungan, dan label. Rekaman atau sesi dibagi ke kelompok latih, validasi, dan uji sebelum dipotong menjadi jendela. Semua potongan dari satu rekaman harus tetap berada dalam kelompok yang sama.
 - [ ] **07. Menyiapkan model awal.** Setelah jendela CSI terbentuk, hitung parameter normalisasi dari data latih yang sudah tersedia pada tahap tersebut. Model awal dilatih pada konfigurasi A. Konfigurasi, seed, dan checkpoint perlu disimpan supaya metode pembanding bisa dimulai dari titik yang sama.

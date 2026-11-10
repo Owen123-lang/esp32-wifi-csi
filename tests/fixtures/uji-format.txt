@@ -1,0 +1,5 @@
+FIXTURE parsing buatan; angka hanya untuk menguji format, bukan pengukuran.
+type,seq,mac,rssi,rate,noise_floor,fft_gain,agc_gain,channel,local_timestamp,sig_len,rx_format,len,first_word,data
+CSI_DATA,0,02:00:00:00:00:01,-45,1,-90,0,0,1,1000,20,0,4,0,"[1,-2,3,-4]"
+CSI_DATA,1,02:00:00:00:00:01,-45,1,-90,0,0,1,2000,20,0,4,1,"[2,-1,4,-3]"
+CSI_DATA,2,02:00:00:00:00:01,-45,1,-90,0,0,1,3000,20,0,4,0,"[1,2]"
