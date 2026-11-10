@@ -1,47 +1,49 @@
 # Eksperimen deteksi jatuh dengan Wi-Fi CSI dan ESP32
 
-Repositori kerja Rowen dan Alvin untuk eksperimen skripsi. ESP32 merekam CSI. Laptop atau PC mengolah rekaman, melatih model, menjalankan adaptasi, dan mengukur kinerjanya. Pertanyaan eksperimennya adalah apakah model dapat mengenali jatuh ketika tata letak ruangan berubah, seberapa baik kemampuannya bertahan di lingkungan lama, dan berapa tambahan memori serta waktu yang dibutuhkan oleh Experience Replay.
+Saya menyiapkan repositori ini bersama Alvin untuk bagian eksperimen skripsi saya. Saya ingin tahu apakah model masih bisa mengenali orang jatuh setelah tata letak benda di ruangan berubah. Untuk mengujinya, saya akan menggunakan ESP32 untuk merekam Channel State Information (CSI) dan laptop atau PC untuk mengolah rekaman serta melatih model.
 
-## Roadmap
+Saya juga ingin melihat apa yang terjadi setelah model belajar dari tata letak baru. Apakah model masih mengenali jatuh pada tata letak sebelumnya? Di bagian ini saya akan menguji Experience Replay, lalu mengukur berapa tambahan memori dan waktu yang dibutuhkan untuk adaptasi.
 
-Centang setiap langkah setelah bukti pada baris tersebut tersedia. Tahap awal dapat dikerjakan tanpa peserta.
+## Rencana kerja
 
-- [x] **01. Buat alat pemeriksa port serial untuk Windows.** Skrip di `scripts/cek-port.ps1` menampilkan daftar port dan dapat memeriksa satu port pilihan. Cara menjalankannya ada di bawah.
-- [ ] **02. Kenali perangkat di meja.** Catat model yang tercetak pada board, port yang muncul saat board disambungkan, dan sumber paket Wi-Fi yang tersedia. Pastikan port yang sama hilang saat board dilepas.
-- [ ] **03. Buktikan alur akuisisi.** Pilih contoh akuisisi dan versi firmware yang cocok dengan board. Rekam satu sesi teknis di ruangan kosong. Periksa bahwa keluaran berisi nilai CSI yang dapat dibaca. Simpan versi firmware, konfigurasi Wi-Fi, peran pengirim dan penerima, serta satuan waktu.
-- [ ] **04. Buat perekam dan pemeriksa kualitas di host.** Simpan data mentah beserta ID rekaman, ID sesi, konfigurasi ruangan, dan waktu. Tampilkan jumlah paket diterima, jumlah sampel CSI valid, serta distribusi selang waktu antarsampel. Uji bahwa rekaman yang terputus tetap dapat ditelusuri.
-- [ ] **05. Siapkan protokol dan jalankan pilot.** Dokumentasikan tata letak A sampai D, posisi perangkat, area gerak, prosedur aktivitas, dan aturan anotasi. Sebelum merekam peserta, pastikan prosedur keselamatan simulasi jatuh dan persetujuan peserta sesuai ketentuan yang berlaku. Gunakan pilot untuk menilai kelayakan akuisisi dan memperjelas parameter.
-- [ ] **06. Kumpulkan dan bagi rekaman.** Buat manifest yang menghubungkan setiap rekaman dengan sesi, peserta berkode, lingkungan, dan label. Pisahkan data latih, validasi, dan uji pada tingkat rekaman atau sesi sebelum membentuk jendela. Periksa bahwa turunan rekaman yang sama selalu berada dalam satu kelompok.
-- [ ] **07. Siapkan prapemrosesan dan model awal.** Bentuk jendela CSI dan hitung parameter normalisasi hanya dari data latih yang tersedia pada tahap itu. Latih model pada A dan simpan konfigurasi, seed, serta checkpoint awal untuk semua pembanding.
-- [ ] **08. Uji pengaruh lingkungan dan adaptasi.** Untuk RQ1, uji model statis dari A pada tiap konfigurasi. Untuk RQ2 dan RQ3, jalankan naive fine-tuning dan Experience Replay dari checkpoint awal yang sama. Setelah adaptasi pada B, uji A dan B. Ulangi pada C dan D dengan menguji seluruh lingkungan yang sudah dipelajari. Isi buffer hanya dengan data latih yang sudah tersedia. Jalankan joint training sebagai acuan offline dengan akses ke gabungan data latih A sampai D.
-- [ ] **09. Susun analisis Bab 4.** Simpan skor deteksi per lingkungan dan tahap, lalu hitung retensi dan forgetting sesuai definisi yang disepakati. Laporkan jumlah serta ukuran sampel buffer, RAM, waktu adaptasi, jumlah pembaruan, dan paparan contoh lama maupun baru. Sertakan konfigurasi dan versi kode untuk setiap hasil.
+Saat ini baru skrip pemeriksa port yang siap. Langkah kami berikutnya adalah menyambungkan board dan mengenali port yang dipakainya.
 
-**Keputusan yang masih terbuka.** Varian board dan firmware, jumlah peserta dan sesi, perubahan tata letak, laju paket, panjang dan tumpang tindih jendela, arsitektur model, ukuran buffer, rasio replay, dan anggaran perbandingan akan ditentukan berdasarkan perangkat, pilot, dan keputusan penelitian.
+- [x] **01. Menyiapkan pemeriksaan port di Windows.** Skrip [cek-port.ps1](scripts/cek-port.ps1) menampilkan port serial yang terlihat di Windows dan bisa memeriksa satu port berdasarkan namanya.
+- [ ] **02. Mengenali board yang akan dipakai.** Kami akan mencatat model yang tertulis pada board, port yang muncul saat kabel USB dipasang, dan perangkat yang tersedia sebagai sumber paket Wi-Fi.
+- [ ] **03. Mencoba rekaman pertama di ruangan kosong.** Setelah tahu model board, kami bisa memilih contoh akuisisi dan firmware yang sesuai. Targetnya satu rekaman berisi nilai CSI yang bisa dibaca. Catatan sesi mencakup versi firmware, pengaturan Wi-Fi, perangkat pengirim dan penerima, serta satuan waktu.
+- [ ] **04. Membuat perekam CSI di laptop.** Setiap berkas mentah perlu punya ID rekaman, ID sesi, konfigurasi ruangan, dan waktu perekaman. Kami akan memeriksa jumlah paket, jumlah sampel CSI yang valid, serta selang waktu antarsampel. Jika sambungan putus di tengah sesi, rekamannya tetap harus bisa ditelusuri.
+- [ ] **05. Menyiapkan dan menjalankan uji pendahuluan.** Saya akan mendokumentasikan tata letak A sampai D, posisi perangkat, area gerak, aktivitas, dan cara memberi label. Sebelum melibatkan peserta, saya perlu memastikan prosedur simulasi jatuh dan persetujuan peserta sesuai ketentuan yang berlaku. Dari uji ini saya ingin tahu apakah rekamannya cukup baik untuk eksperimen utama.
+- [ ] **06. Mengumpulkan dan membagi rekaman.** Saya akan membuat daftar rekaman yang memuat ID sesi, kode peserta, lingkungan, dan label. Rekaman atau sesi dibagi ke kelompok latih, validasi, dan uji sebelum dipotong menjadi jendela. Semua potongan dari satu rekaman harus tetap berada dalam kelompok yang sama.
+- [ ] **07. Menyiapkan model awal.** Setelah membentuk jendela CSI, saya akan menghitung parameter normalisasi dari data latih yang sudah tersedia pada tahap tersebut. Model awal dilatih pada konfigurasi A. Konfigurasi, seed, dan checkpoint perlu disimpan supaya metode pembanding bisa dimulai dari titik yang sama.
+- [ ] **08. Menguji model saat tata letak berubah.** Untuk RQ1, saya akan menguji model statis dari A pada setiap konfigurasi. Untuk RQ2 dan RQ3, saya akan membandingkan naive fine-tuning dan Experience Replay dari checkpoint awal yang sama. Setelah belajar di B, model diuji di A dan B. Setelah C dan D, pengujian kembali mencakup semua lingkungan yang sudah dipelajari. Buffer replay hanya boleh berisi data latih yang sudah tersedia. Sebagai acuan offline, joint training menggunakan gabungan data latih A sampai D.
+- [ ] **09. Menganalisis hasil untuk Bab 4.** Saya akan mencatat skor deteksi per lingkungan setelah setiap tahap agar perubahan kinerja di lingkungan lama terlihat. Retensi dan forgetting akan dihitung sesuai definisi yang dipilih. Untuk membandingkan biaya adaptasi, saya akan mencatat jumlah contoh dan ukuran buffer, RAM, waktu, jumlah pembaruan, serta jumlah contoh lama dan baru yang diproses. Setiap hasil perlu disertai konfigurasi dan versi kode yang digunakan.
 
-## Mulai dari pemeriksaan port (Windows)
+Saya masih perlu menentukan varian board, firmware, jumlah peserta dan sesi, rincian perubahan tata letak, serta laju paket. Pilihan panjang dan tumpang tindih jendela, arsitektur model, ukuran buffer, rasio replay, dan anggaran pelatihan juga masih terbuka.
 
-Dari PowerShell, buka folder repositori. Pada komputer baru, ambil salinannya terlebih dahulu.
+## Cara kami mengecek port ESP32 di Windows
+
+Di komputer yang belum punya salinan repo, mulai dari PowerShell dengan perintah berikut.
 
 ```powershell
 git clone https://github.com/Owen123-lang/esp32-wifi-csi.git
 cd esp32-wifi-csi
 ```
 
-1. Lepaskan board dan jalankan perintah berikut. Catat daftar port awal.
+1. Dengan board masih terlepas, jalankan skrip ini dan catat port yang muncul.
 
    ```powershell
    powershell -NoProfile -ExecutionPolicy RemoteSigned -File .\scripts\cek-port.ps1
    ```
 
-2. Sambungkan board dengan kabel USB data dan ulangi perintah yang sama. Jika muncul port baru, periksa port itu secara eksplisit. Ganti `COM5` dengan nama yang terlihat di komputer.
+2. Sambungkan board dengan kabel USB data, lalu ulangi perintah tadi. Kalau ada port baru, periksa namanya secara langsung. Di contoh ini saya memakai `COM5`. Ganti dengan port yang muncul di komputer.
 
    ```powershell
    powershell -NoProfile -ExecutionPolicy RemoteSigned -File .\scripts\cek-port.ps1 -Port COM5
    $LASTEXITCODE
    ```
 
-3. Lepaskan board dan ulangi pemeriksaan port pilihan. Port yang muncul saat disambungkan dan hilang saat dilepas adalah kandidat port board. Jika daftar tetap sama, periksa kabel data, port USB, dan entri perangkat di Device Manager sebelum memilih driver yang sesuai dengan board.
+3. Cabut board dan ulangi pemeriksaan port tersebut. Jika port ikut hilang, kita sudah punya petunjuk port mana yang dipakai board. Jika daftarnya tetap sama sepanjang pemeriksaan, cek kabel data, port USB, dan entri board di Device Manager untuk mengetahui driver yang sesuai.
 
-Keluaran berbentuk JSON. Pemeriksaan daftar berhasil dengan kode `0`, termasuk jika daftar kosong. Untuk pemeriksaan satu port, kode `0` berarti port ditemukan dan `1` berarti port tidak ditemukan. Kode `2` menunjukkan Windows gagal membaca daftar port. Skrip hanya memeriksa nama port yang terlihat oleh Windows. Pengujian firmware dan penerimaan CSI dilakukan pada langkah 03.
+Skrip menampilkan hasil dalam format JSON. Saat menampilkan seluruh daftar, kode keluar `0` berarti pemeriksaan berhasil, termasuk ketika daftarnya kosong. Saat memeriksa satu port, `0` berarti port ditemukan dan `1` berarti port tidak ditemukan. Kode `2` berarti Windows gagal membaca daftar port. Untuk memastikan CSI benar-benar diterima, kami akan memeriksa isi rekaman pada langkah 03.
 
-Simpan rekaman lokal di `data/` dan keluaran percobaan di `runs/`. Kedua folder dikecualikan dari Git. Gunakan ID peserta berkode pada manifest penelitian.
+Rekaman mentah disimpan di `data/` dan keluaran percobaan di `runs/`. Kedua folder masuk `.gitignore`. Daftar rekaman menggunakan kode peserta.
