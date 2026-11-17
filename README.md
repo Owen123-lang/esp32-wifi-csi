@@ -1,6 +1,8 @@
 # Eksperimen deteksi jatuh dengan Wi-Fi CSI dan ESP32
 ## To do
 
+Pada uji ulang sesi diam, 2.660 paket diperiksa sebelum dan sesudah kompensasi. Sebagian komponen CSI berubah menjadi nol, tetapi setiap paket masih menyimpan komponen yang bernilai. [Hasil uji ulang dan grafik Log 6](docs/pilot-2026-11-18/README.md)
+
 ESP32-S3 sudah dipakai untuk merekam tiga kondisi di kamar. Pada sesi diam, sebagian besar sampel berisi nol di seluruh komponen CSI. Penyebabnya masih diperiksa sebelum pengambilan data berikutnya. [Hasil dan grafik uji awal](docs/pilot-2026-11-17/README.md) · [Panduan akuisisi](docs/akuisisi.md)
 
 - [x] **01. Menyiapkan pemeriksaan port di Windows.** Skrip [cek-port.ps1](scripts/cek-port.ps1) menampilkan port serial yang terlihat di Windows dan bisa memeriksa satu port berdasarkan namanya.

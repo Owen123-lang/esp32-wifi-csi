@@ -14,6 +14,15 @@ LONG_ROW = b'CSI_DATA,0,02:00:00:00:00:01,-44,1,0,0,0,0,0,0,0,0,0,-90,0,1,0,42,0
 
 
 class PerekamTest(unittest.TestCase):
+    def test_diagnostik_paket_sama(self):
+        line = b"CSI_DATA,DIAM1,102,02:00:00:00:00:01,-52,5,42500,4,0,3,-1,0,3e800000,fd0200f8,000000000000fffe"
+        sample = Decoder().parse(line)
+        self.assertEqual(sample["gain"], 0.25)
+        self.assertEqual(sample["data_awal"], [-3, 2, 0, -8])
+        self.assertEqual(sample["data"], [0, 0, 0, -2])
+        with self.assertRaises(ValueError):
+            Decoder().parse(line[:-2])
+
     def test_stream_loopback(self):
         payload = FIXTURE.read_bytes()
         with tempfile.TemporaryDirectory() as tmp, serial.serial_for_url("loop://", timeout=0.02) as port:

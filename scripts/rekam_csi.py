@@ -4,6 +4,7 @@ import argparse
 import csv
 import json
 import math
+import struct
 import sys
 import time
 from collections import Counter
@@ -24,6 +25,28 @@ def utc():
     return datetime.now(timezone.utc).isoformat()
 
 
+def parse_diam(line):
+    fields = line.decode("ascii").split(",")
+    if len(fields) != 15:
+        raise ValueError("format_DIAM1")
+    _, _, seq, mac, rssi, channel, ts, size, invalid, agc, fft, status, bits, raw, scaled = fields
+    n = int(size)
+    if not 0 < n <= 1024 or len(raw) != 2*n or len(scaled) != 4*n or len(bits) != 8:
+        raise ValueError("panjang_DIAM1")
+    raw_bytes, scaled_bytes = bytes.fromhex(raw), bytes.fromhex(scaled)
+    gain_bytes = bytes.fromhex(bits)
+    if len(raw_bytes) != n or len(scaled_bytes) != 2*n or len(gain_bytes) != 4 or invalid not in ("0", "1"):
+        raise ValueError("isi_DIAM1")
+    gain, = struct.unpack(">f", gain_bytes)
+    if not math.isfinite(gain):
+        raise ValueError("gain_DIAM1")
+    return dict(type="DIAM1", seq=int(seq), mac=mac, rssi=int(rssi), channel=int(channel),
+                local_timestamp=int(ts), len=n, first_word=int(invalid), agc_gain=int(agc),
+                fft_gain=int(fft), gain_status=int(status), gain=gain,
+                data_awal=list(struct.unpack(f"{n}b", raw_bytes)),
+                data=list(struct.unpack(f">{n}h", scaled_bytes)))
+
+
 class Decoder:
     def __init__(self):
         self.header = None
@@ -38,6 +61,8 @@ class Decoder:
         if not line.startswith(b"CSI_DATA,"):
             return None
 
+        if line.startswith(b"CSI_DATA,DIAM1,"):
+            return self.add_interval(parse_diam(line))
         cells = next(csv.reader([line.decode("ascii")], strict=True))
         fields = self.header
         if fields is None:  # Firmware sudah berjalan saat port dibuka.
@@ -54,6 +79,9 @@ class Decoder:
         if not all(type(v) is int for v in payload) or sample["first_word"] not in (0, 1):
             raise ValueError("isi_payload")
         sample["data"] = payload
+        return self.add_interval(sample)
+
+    def add_interval(self, sample):
         seq = sample.get("seq", sample.get("id"))
         timestamp = sample["local_timestamp"] & 0xFFFFFFFF
         sample["selang_timestamp_us"] = None

@@ -68,3 +68,19 @@ Tekan Enter sebelum setiap sesi. Ada waktu 15 detik untuk mengambil posisi (bisa
 3. **Jalan.** Mulai dari titik yang sama. Saat tanda MULAI, jalan satu kali menuju meja ESP32. Setelah tiba, tetap diam sampai tanda SELESAI. Catat perkiraan detik saat tiba agar bagian berjalan dapat dikenali.
 
 Folder hasil ditampilkan di terminal. Di dalamnya, `kosong/`, `diam/`, dan `jalan/` masing-masing menyimpan `serial.bin` (byte serial selama rekaman), `sampel.jsonl` (CSI dan metadata per paket), `sesi.json` (status dan jumlah baris), serta `catatan.txt` jika diisi. Berkas `perbandingan.png` menampilkan rerata magnitudo pasangan komponen CSI mentah dan RSSI dengan skala yang sama untuk seluruh sesi. Titik mengikuti waktu baca blok serial di laptop. Sampel dengan bagian awal bertanda tidak valid atau komponen tak berpasangan tetap disimpan dan dilewati saat menggambar. Untuk membuat ulang grafik, jalankan skrip dengan `--grafik <folder-hasil>` tanpa membuka port.
+
+## Mengulang sesi diam untuk memeriksa kompensasi gain
+
+Pada laptop pengujian, tutup monitor serial lain dan letakkan router serta ESP32 seperti saat pilot pertama. Dari PowerShell di folder repositori, jalankan:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy RemoteSigned -File .\scripts\uji-diam.ps1 -Port COM8 -Flash
+```
+
+Opsi `-Flash` memasang firmware diagnostik ESP32-S3 yang telah dibangun di laptop ini. Untuk pengulangan dengan firmware yang sama, jalankan perintah tanpa `-Flash`. Perekam memeriksa format DIAM1 dan menunggu pengumpulan 100 paket awal firmware selesai. Tekan Enter, ambil posisi yang sama dekat meja router selama 15 detik persiapan, lalu tetap diam dari tanda MULAI hingga SELESAI (30 detik). Jika posisi atau orientasi tubuh berbeda dari sesi pertama, catat perbedaannya saat membandingkan sesi.
+
+Setiap pengulangan disimpan di folder baru `data/diam_gain/<id>/`. Berkas `serial.bin` menyimpan keluaran serial asli. Dalam `sampel.jsonl`, setiap paket memuat `data_awal` dari buffer CSI driver, `gain` sebagai faktor pengali, dan `data` setelah perkalian dan konversi ke bilangan bulat di ESP32. RSSI, kanal, penghitung paket, status fungsi gain, dan waktu perangkat juga disimpan. Satu baris diagnostik lebih panjang dari keluaran pilot pertama sehingga laju paket yang sampai di laptop perlu diperiksa per sesi.
+
+Di `ringkasan.json`, `nol_sejak_awal` menghitung paket dengan seluruh komponen sudah nol saat buffer dibaca, dan `menjadi_nol` menghitung paket yang masih berisi nilai sebelum kompensasi lalu seluruhnya nol sesudah konversi. Penyebutnya adalah `dipakai`. Paket dengan penanda bagian awal tidak valid, status gain gagal, panjang ganjil, atau dari fase awal firmware dilewati untuk perbandingan dan tetap tersimpan. Grafik `perbandingan_gain.png` menunjukkan rerata magnitudo sebelum dan sesudah konversi, dengan sumbu vertikal tersendiri pada tiap panel.
+
+Untuk membangun ulang, jalankan skrip dengan `-BuildOnly`. Skrip memakai ESP-IDF 5.4.2 dan konfigurasi Wifi lokal pilot di `data/build-s3-local/project`. Salinan proyek dan biner diagnostik berada di `data/build-diam-s3/project`. Sumber callback diagnostik ada di `firmware/diagnostik-s3/app_main.c` dan diturunkan dari contoh Espressif yang sudah dikunci pada submodule.
