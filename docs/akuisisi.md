@@ -51,3 +51,20 @@ Setiap pemanggilan membuat folder baru dengan ID unik. Lokasinya ditampilkan saa
 `selang_timestamp_us` dihitung dari waktu penerimaan di perangkat untuk dua sampel dengan nomor urut bersebelahan dari MAC yang sama. Nilainya kosong pada awal aliran, sesudah header, atau saat urutan terputus. Simpan nilai mentah dan periksa selangnya sebelum menghitung laju efektif. Hitungan pada ringkasan merujuk ke baris CSI yang sampai di laptop. Jumlah seluruh paket radio tidak diketahui dari log serial ini.
 
 Penanda `first_word=1` disimpan karena bagian awal buffer ditandai tidak valid oleh perangkat. Lolos pemeriksaan format belum memastikan kualitas sinyal. Pemetaan komponen CSI, pemilihan subcarrier, dan penanganan bagian yang tidak valid perlu disesuaikan dengan target sebelum prapemrosesan. Folder rekaman dikecualikan dari Git karena dapat memuat MAC, informasi jaringan, dan metadata sesi.
+
+## Pilot kamar kosong, diam, dan jalan (tiga rekaman 30 detik)
+
+Letakkan router di meja besar dan ESP32 di meja laptop. Pertahankan posisi perangkat dan posisi pintu selama ketiga rekaman. Tutup monitor serial lain dan aktifkan suara sistem laptop agar tanda selesai terdengar dari luar kamar. Untuk firmware ESP32-S3 yang sudah terpasang, jalankan dari folder repo:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe scripts\uji_diam_jalan.py --port COM8
+```
+
+Tekan Enter sebelum setiap sesi. Ada waktu 15 detik untuk mengambil posisi (bisa diubah dengan `--siap 25`). Perekam menunggu paket CSI valid, memberi tanda MULAI, lalu merekam selama 30 detik.
+
+1. **Kosong.** Keluar selama waktu persiapan. Pastikan kamar tanpa orang sampai tanda SELESAI, baru masuk kembali.
+2. **Diam.** Ambil posisi dekat meja router dan tetap diam sampai tanda SELESAI.
+3. **Jalan.** Mulai dari titik yang sama. Saat tanda MULAI, jalan satu kali menuju meja ESP32. Setelah tiba, tetap diam sampai tanda SELESAI. Catat perkiraan detik saat tiba agar bagian berjalan dapat dikenali.
+
+Folder hasil ditampilkan di terminal. Di dalamnya, `kosong/`, `diam/`, dan `jalan/` masing-masing menyimpan `serial.bin` (byte serial selama rekaman), `sampel.jsonl` (CSI dan metadata per paket), `sesi.json` (status dan jumlah baris), serta `catatan.txt` jika diisi. Berkas `perbandingan.png` menampilkan rerata magnitudo pasangan komponen CSI mentah dan RSSI dengan skala yang sama untuk seluruh sesi. Titik mengikuti waktu baca blok serial di laptop. Sampel dengan bagian awal bertanda tidak valid atau komponen tak berpasangan tetap disimpan dan dilewati saat menggambar. Untuk membuat ulang grafik, jalankan skrip dengan `--grafik <folder-hasil>` tanpa membuka port.

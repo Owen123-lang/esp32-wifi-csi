@@ -65,7 +65,7 @@ class Decoder:
         return sample
 
 
-def record(stream, destination, meta, *, live, seconds):
+def record(stream, destination, meta, *, live, seconds, sample_clock=False):
     """Simpan setiap blok mentah sebelum pemisahan baris dan validasi CSV."""
     destination.mkdir(parents=True, exist_ok=False)
     manifest = destination / "sesi.json"
@@ -88,6 +88,7 @@ def record(stream, destination, meta, *, live, seconds):
             while seconds is None or time.monotonic() - start < seconds:
                 size = min(max(stream.in_waiting, 1), 65536) if live else 65536
                 chunk = stream.read(size)
+                elapsed = time.monotonic() - start if sample_clock else None
                 if not chunk:
                     if live:  # Timeout serial tetap memberi kesempatan memeriksa durasi.
                         continue
@@ -121,6 +122,8 @@ def record(stream, destination, meta, *, live, seconds):
                             counts["ditolak_parser"] += 1
                         continue
                     if sample is not None:
+                        if sample_clock:
+                            sample["waktu_baca_s"] = elapsed
                         counts["diterima_parser"] += 1
                         counts["first_word_invalid"] += sample["first_word"]
                         out.write(json.dumps(sample, separators=(",", ":")) + "\n")
