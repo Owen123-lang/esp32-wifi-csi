@@ -20,3 +20,18 @@ Kedua panel memakai waktu yang sama. Skala vertikal masing-masing panel berbeda.
 Median RSSI pada uji ulang lebih kuat 11 dB. Sesi pertama hanya menyimpan CSI sesudah konversi. Karena itu, penyebab paket yang seluruh komponennya nol pada sesi pertama belum bisa dipastikan dari uji ulang ini. Langkah berikutnya adalah mengulang posisi diam dengan titik, arah tubuh, serta posisi perangkat yang ditandai, lalu membandingkan RSSI, faktor pengali, dan jumlah paket nol antarulangan. Hasil ini dipakai untuk menilai kualitas akuisisi sebelum pengambilan data aktivitas.
 
 [Kode firmware diagnostik](../../firmware/diagnostik-s3/app_main.c) · [Perekam di laptop](../../scripts/uji_diam_gain.py) · [Panduan uji diam](../akuisisi.md)
+
+## Uji lanjutan dengan dua posisi berdiri
+
+Untuk mengecek apakah paket nol muncul kembali ketika tubuh berada di jalur router ke ESP32, satu sesi diam direkam di jalur tersebut dan satu sesi lagi di sampingnya. Setiap posisi direkam selama 30 detik dengan firmware diagnostik yang sama.
+
+| Posisi | Paket terbaca | Median RSSI | Komponen yang menjadi nol setelah konversi | Paket dengan seluruh komponen nol setelah konversi |
+| --- | ---: | ---: | ---: | ---: |
+| Di antara router dan ESP32 | 2.843 | -47 dBm | 13,0% | 0 |
+| Di samping jalur | 2.753 | -44 dBm | 5,5% | 0 |
+
+Persentase pada kolom keempat dihitung dari komponen yang awalnya bernilai selain nol. Pada posisi di jalur, median sinyal lebih lemah 3 dB dan lebih banyak komponen menjadi nol. Meski begitu, semua paket pada kedua rekaman masih menyimpan nilai CSI. Pola 78,4% paket nol dari sesi diam pertama belum terulang. Satu rekaman per posisi belum cukup untuk memastikan penyebab pola awal itu.
+
+![RSSI dan rerata magnitudo CSI setelah konversi pada kedua posisi dengan skala yang sama](perbandingan_posisi.png)
+
+Grafik per posisi juga memperlihatkan magnitudo sebelum dan sesudah kompensasi. [Diam di jalur](gain_di_jalur.png) · [Diam di samping](gain_di_samping.png)

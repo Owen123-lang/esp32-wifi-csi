@@ -6,6 +6,7 @@ import math
 import sys
 import time
 from pathlib import Path
+from statistics import median
 from uuid import uuid4
 
 import serial
@@ -40,6 +41,7 @@ def tunggu_diagnostik(port):
 
 def rangkum(folder):
     waktu, sebelum, sesudah = [], [], []
+    rssi, gain = [], []
     hitung = dict(dipakai=0, dilewati=0, nol_sejak_awal=0, menjadi_nol=0, nol_sesudah=0)
     with (folder / "sampel.jsonl").open(encoding="utf-8") as src:
         for line in src:
@@ -55,8 +57,13 @@ def rangkum(folder):
             hitung["menjadi_nol"] += not nol_awal and nol_akhir
             hitung["nol_sesudah"] += nol_akhir
             waktu.append(s["waktu_baca_s"])
+            rssi.append(s["rssi"])
+            gain.append(s["gain"])
             for nilai, seri in ((awal, sebelum), (akhir, sesudah)):
                 seri.append(2 * sum(math.hypot(i, q) for i, q in zip(nilai[::2], nilai[1::2])) / len(nilai))
+    if waktu:
+        hitung.update(median_rssi_dbm=median(rssi), median_gain=median(gain),
+                      persen_paket_nol=100 * hitung["nol_sesudah"] / hitung["dipakai"])
     (folder / "ringkasan.json").write_text(json.dumps(hitung, indent=2), encoding="utf-8")
     if not waktu:
         raise ValueError("Data mentah tersimpan, tetapi tidak ada pasangan CSI yang layak dibandingkan.")
@@ -71,29 +78,52 @@ def rangkum(folder):
     plt.close(fig)
     print(f"Paket yang sudah nol sejak awal: {hitung['nol_sejak_awal']} dari {hitung['dipakai']}.")
     print(f"Paket yang baru menjadi nol setelah konversi: {hitung['menjadi_nol']} dari {hitung['dipakai']}.")
+    return hitung
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", default="COM8")
+    parser.add_argument("--dua-posisi", action="store_true",
+                        help="Bandingkan dua posisi diam dengan satu koneksi serial.")
     args = parser.parse_args()
-    folder = Path(__file__).resolve().parents[1] / "data" / "diam_gain" / uuid4().hex
+    run_id = uuid4().hex
+    root = Path(__file__).resolve().parents[1] / "data"
+    lokasi = {"diam": "diam dekat router"}
+    folder = root / "diam_gain" / run_id
+    if args.dua_posisi:
+        folder = root / "diam_dua_posisi" / run_id
+        lokasi = {"di_jalur": "diam di antara router dan ESP32",
+                  "di_samping": "diam di samping jalur router ke ESP32"}
+        print("Tandai dua titik. Pertahankan posisi perangkat, jarak ke router sebisa mungkin, dan arah hadap.")
+    hasil = {}
     with serial.Serial(args.port, 921600, timeout=.15) as port:
         print("Menunggu firmware diagnostik dan paket CSI ...", flush=True)
         tunggu_diagnostik(port)
-        input("Tekan Enter saat siap pindah ke posisi diam dekat router. ")
-        print("Ambil posisi. Perekaman dimulai dalam 15 detik.", flush=True)
-        time.sleep(15)
-        port.reset_input_buffer()
-        meta = dict(sesi="diam dekat router", format="DIAM1", board="ESP32-S3",
-                    sumber="serial", port=args.port, baud=921600, durasi_target_s=DURASI)
         print(f"Folder hasil: {folder}", flush=True)
-        tanda("MULAI DIAM")
-        record(port, folder, meta, live=True, seconds=DURASI, sample_clock=True)
-        tanda("SELESAI DIAM")
-    if meta["status"] != "selesai":
-        raise RuntimeError("Rekaman terhenti. Bagian yang sempat dibaca tersimpan di folder hasil.")
-    rangkum(folder)
+        for label, posisi in lokasi.items():
+            dest = folder / label if args.dua_posisi else folder
+            print(f"Posisi: {posisi}.")
+            input("Tekan Enter saat siap mengambil posisi. ")
+            print("Ada 15 detik untuk mengambil posisi. Tunggu tanda MULAI.", flush=True)
+            time.sleep(15)
+            tunggu_diagnostik(port)
+            port.reset_input_buffer()
+            meta = dict(id_rangkaian=run_id, sesi=posisi, format="DIAM1", board="ESP32-S3",
+                        sumber="serial", port=args.port, baud=921600, durasi_target_s=DURASI)
+            tanda(f"MULAI {label.upper()}")
+            record(port, dest, meta, live=True, seconds=DURASI, sample_clock=True)
+            tanda(f"SELESAI {label.upper()}")
+            if meta["status"] != "selesai":
+                raise RuntimeError(f"Rekaman terhenti. Data yang sempat dibaca tersimpan di {dest}.")
+            hasil[label] = rangkum(dest)
+    if args.dua_posisi:
+        (folder / "perbandingan.json").write_text(json.dumps(hasil, indent=2), encoding="utf-8")
+        for label, s in hasil.items():
+            print(f"{label}: median RSSI {s['median_rssi_dbm']:g} dBm, "
+                  f"median gain {s['median_gain']:.3f}, "
+                  f"paket seluruhnya nol sesudah konversi {s['nol_sesudah']}/{s['dipakai']} "
+                  f"({s['persen_paket_nol']:.1f}%).")
 
 
 if __name__ == "__main__":

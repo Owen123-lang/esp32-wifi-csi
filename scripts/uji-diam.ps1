@@ -1,7 +1,8 @@
 param(
     [string]$Port = 'COM8',
     [switch]$Flash,
-    [switch]$BuildOnly
+    [switch]$BuildOnly,
+    [switch]$DuaPosisi
 )
 
 $ErrorActionPreference = 'Stop'
@@ -41,5 +42,7 @@ if ($Flash) {
     } finally { Pop-Location }
 }
 
-& "$repo/.venv/Scripts/python.exe" "$PSScriptRoot/uji_diam_gain.py" --port $Port
+$modeArgs = @()
+if ($DuaPosisi) { $modeArgs += '--dua-posisi' }
+& "$repo/.venv/Scripts/python.exe" "$PSScriptRoot/uji_diam_gain.py" --port $Port @modeArgs
 exit $LASTEXITCODE
