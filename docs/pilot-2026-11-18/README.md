@@ -17,4 +17,6 @@ Pada uji ini, median kekuatan sinyal di posisi pertama 3 dB lebih rendah. Posisi
 
 Firmware diagnostik juga sudah bisa menyimpan CSI sebelum dan sesudah kompensasi dari paket yang sama. Grafiknya bisa dilihat dari [uji ulang sesi diam](perbandingan_gain.png), [sesi diam di jalur](gain_di_jalur.png), dan [sesi diam di samping jalur](gain_di_samping.png).
 
+Selanjutnya, rincian tata letak A sampai D akan disusun, termasuk posisi router, ESP32, serta titik awal dan arah hadap peserta. Daftar aktivitas, cara memberi label, dan cara mengecek kualitas rekaman juga akan disiapkan untuk uji pendahuluan berikutnya. [To do nomor 05](../../README.md#to-do)
+
 [Panduan perekaman](../akuisisi.md) · [Kode perekam di laptop](../../scripts/uji_diam_gain.py)
