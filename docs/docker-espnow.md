@@ -3,7 +3,7 @@
 Gunakan Docker Desktop dengan Linux containers, atau Docker Engine dengan plugin Docker Compose. Jalankan perintah dari root repo. Jika belum memiliki checkout branch pilot, ambil dengan perintah ini.
 
 ```sh
-git clone --branch codex/andi-espnow-three-board-pilot https://github.com/Owen123-lang/esp32-wifi-csi.git
+git clone --branch feat/espnow-three-board-pilot https://github.com/Owen123-lang/esp32-wifi-csi.git
 cd esp32-wifi-csi
 ```
 

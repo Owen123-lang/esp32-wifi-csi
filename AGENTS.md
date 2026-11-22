@@ -9,6 +9,21 @@ Repositori ini adalah basis pengembangan alat akuisisi Wi-Fi CSI bersama Andi da
 - Anggap router + 1 RX sebagai konfigurasi pilot yang terdokumentasi. Rancangan Andi memakai 1 TX + 2 RX ESP32-S3. Status keduanya sebagai konfigurasi yang akan didukung bersama masih perlu disepakati.
 - Gunakan branch perubahan terpisah dan siapkan PR untuk ditinjau bersama ketika diminta. Jangan push atau membuka PR tanpa instruksi. Gunakan pesan commit yang jelas dalam bahasa Inggris.
 
+## Penamaan branch
+
+Gunakan format `<tipe>/<topik>`. Tulis topik singkat dalam bahasa Inggris, dengan huruf kecil dan tanda hubung, tanpa nama orang. Contoh yang mengikuti format ini adalah `feat/espnow-three-board-pilot`.
+
+| Tipe | Penggunaan |
+| --- | --- |
+| `feat/` | Fitur atau kemampuan baru |
+| `fix/` | Perbaikan bug atau regresi |
+| `chore/` | Pemeliharaan repo, alat, atau dependensi |
+| `docs/` | Perubahan dokumentasi |
+| `refactor/` | Perapian struktur kode dengan perilaku yang sama |
+| `test/` | Penambahan atau perbaikan pengujian |
+| `build/` | Perubahan proses build atau pengemasan |
+| `ci/` | Perubahan alur CI |
+
 ## Firmware dan akuisisi
 
 - Catat model board, commit firmware, versi ESP-IDF, konfigurasi radio, baud konsol, dan identitas build yang benar-benar dipasang. Simpan SSID, kata sandi, pemetaan COM lokal, data partisipan, rekaman serial mentah, dan build sementara di luar commit.

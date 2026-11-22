@@ -36,7 +36,7 @@ Repo bersama: [Owen123-lang/esp32-wifi-csi](https://github.com/Owen123-lang/esp3
 
 ## Pekerjaan branch Andi
 
-Pada 22 November 2026, Andi memulai profil ESP-NOW di branch `codex/andi-espnow-three-board-pilot` dari `f58a812`. Source firmware dan perekam kandidat dibawa dari repo skripsi Andi pada `b28f93d`. Firmware ada di `firmware/espnow-s3` dan alat host ada di `espnow`. Alur router Owen tetap bisa dijalankan dengan perintah yang sama.
+Pada 22 November 2026, Andi memulai profil ESP-NOW dari `f58a812`. Branch pilot kini bernama `feat/espnow-three-board-pilot`. Source firmware dan perekam kandidat dibawa dari repo skripsi Andi pada `b28f93d`. Firmware ada di `firmware/espnow-s3` dan alat host ada di `espnow`. Alur router Owen tetap bisa dijalankan dengan perintah yang sama.
 
 Konfirmasi Owen atas topologi eksperimen utama, kompatibilitas format, dan penerapan bersama masih menunggu. Pilot fisik tiga board perlu memeriksa identitas paket bersama, kecocokan timestamp CSI/marker, dan kualitas rekaman. Gunakan [panduan pilot](espnow/README.md) untuk melanjutkan.
 
