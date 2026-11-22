@@ -1,5 +1,14 @@
 /data/
 /runs/
 /.venv/
+/.venv-espnow/
 __pycache__/
 .env
+/espnow/*.egg-info/
+/espnow/src/*.egg-info/
+/espnow/build/
+/firmware/espnow-s3/build-*/
+/firmware/espnow-s3/sdkconfig
+/firmware/espnow-s3/sdkconfig.*
+!/firmware/espnow-s3/sdkconfig.defaults
+/firmware/espnow-s3/managed_components/

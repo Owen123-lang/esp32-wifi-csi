@@ -1,0 +1,16 @@
+menu "Skripsi CSI pilot"
+config CSI_ROLE_TX
+    bool "Build transmitter instead of receiver"
+    default n
+config CSI_DEVICE_ID
+    string "Board identity (tx, rx-a, or rx-b)"
+    default "rx-a"
+config CSI_CHANNEL
+    int "Pilot Wi-Fi channel (must match the host config)"
+    range 1 11
+    default 6
+config CSI_RATE_HZ
+    int "Requested TX rate; actual timestamps are recorded"
+    range 1 200
+    default 100
+endmenu

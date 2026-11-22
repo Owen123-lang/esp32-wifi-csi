@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "serial_baud": 921600,
+  "radio": {
+    "channel": 6,
+    "bandwidth_mhz": 20,
+    "nominal_rate_hz": 100,
+    "csi_format": "lltf_only_v1",
+    "idf_version": "v5.4.3"
+  },
+  "devices": [
+    {
+      "id": "tx",
+      "port": "CHANGE_ME_TX",
+      "role": "tx"
+    },
+    {
+      "id": "rx-a",
+      "port": "CHANGE_ME_RX-A",
+      "role": "rx"
+    },
+    {
+      "id": "rx-b",
+      "port": "CHANGE_ME_RX-B",
+      "role": "rx"
+    }
+  ],
+  "preprocessing": {
+    "raw_pair_indices": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      22,
+      23,
+      24,
+      25,
+      26,
+      38,
+      39,
+      40,
+      41,
+      42,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63
+    ],
+    "resample_hz": 100,
+    "short_seconds": 2,
+    "long_seconds": 8,
+    "stride_seconds": 1,
+    "max_gap_seconds": 0.1,
+    "min_observed_ratio": 0.9,
+    "causal_median_samples": 3
+  }
+}

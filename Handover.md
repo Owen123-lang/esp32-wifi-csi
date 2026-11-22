@@ -33,3 +33,11 @@ Repo bersama: [Owen123-lang/esp32-wifi-csi](https://github.com/Owen123-lang/esp3
 | Cara build di kedua PC | Versi ESP-IDF per profil, sumber konfigurasi, dan langkah build tanpa jalur absolut atau kredensial. |
 | Format dan diagnostik bersama | Format serial yang tetap kompatibel, cara menyimpan IQ awal dan hasil kompensasi, serta representasi identitas paket TX untuk dua RX. |
 | Pembagian kerja | Penanggung jawab firmware, perekam, pilot fisik, dan review PR. |
+
+## Pekerjaan branch Andi
+
+Pada 22 November 2026, Andi memulai profil ESP-NOW di branch `codex/andi-espnow-three-board-pilot` dari `f58a812`. Source firmware dan perekam kandidat dibawa dari repo skripsi Andi pada `b28f93d`. Firmware ada di `firmware/espnow-s3` dan alat host ada di `espnow`. Alur router Owen tetap bisa dijalankan dengan perintah yang sama.
+
+Konfirmasi Owen atas topologi eksperimen utama, kompatibilitas format, dan penerapan bersama masih menunggu. Pilot fisik tiga board perlu memeriksa identitas paket bersama, kecocokan timestamp CSI/marker, dan kualitas rekaman. Gunakan [panduan pilot](espnow/README.md) untuk melanjutkan.
+
+Verifikasi branch: 12 tes host ESP-NOW dan 5 tes perekam Owen lulus. Paket host berhasil dibangun dan dipasang, dan simulasi CLI 12 detik menghasilkan 1.200 paket bersama berlabel sintetis. Source firmware sama dengan versi pilot Andi. Build firmware di repo ini, flash, dan uji radio fisik masih menunggu.

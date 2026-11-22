@@ -1,5 +1,7 @@
 # Eksperimen deteksi jatuh dengan Wi-Fi CSI dan ESP32
 
+Panduan [pilot ESP-NOW tiga board](espnow/README.md) tersedia untuk rancangan akuisisi dua link Andi.
+
 Perekaman CSI dari router ke ESP32-S3 sudah dicoba di kamar. Sudah ada rekaman saat kamar kosong, saat diam, dan saat berjalan. Sesi diam juga sudah dicoba di dua posisi untuk melihat perbedaan sinyal yang diterima. [Hasil dan grafik Log 6](docs/pilot-2026-11-18/README.md) · [Panduan akuisisi](docs/akuisisi.md)
 
 ## To do

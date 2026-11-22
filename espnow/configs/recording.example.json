@@ -1,0 +1,12 @@
+{
+  "recording_id": "pilot-empty-001",
+  "session_id": "session-001",
+  "room_id": "room-a",
+  "position_id": "position-a",
+  "subject_group": "empty-room",
+  "subject_ids": [],
+  "occupancy": "0",
+  "motion": "M0",
+  "consent_confirmed": false,
+  "notes": "Set confirmation only after checking the approved recording protocol. Replace IDs before real collection."
+}
