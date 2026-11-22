@@ -41,3 +41,9 @@ Pada 22 November 2026, Andi memulai profil ESP-NOW di branch `codex/andi-espnow-
 Konfirmasi Owen atas topologi eksperimen utama, kompatibilitas format, dan penerapan bersama masih menunggu. Pilot fisik tiga board perlu memeriksa identitas paket bersama, kecocokan timestamp CSI/marker, dan kualitas rekaman. Gunakan [panduan pilot](espnow/README.md) untuk melanjutkan.
 
 Verifikasi branch: 12 tes host ESP-NOW dan 5 tes perekam Owen lulus. Paket host berhasil dibangun dan dipasang, dan simulasi CLI 12 detik menghasilkan 1.200 paket bersama berlabel sintetis. Source firmware sama dengan versi pilot Andi. Build firmware di repo ini, flash, dan uji radio fisik masih menunggu.
+
+## Docker untuk profil ESP-NOW
+
+Pada 22 November 2026, branch pilot menambahkan tiga layanan Compose untuk build ESP-IDF v5.4.3, simulasi host, dan uji boot QEMU. Hasil tersimpan di `runs/docker/` dan dikecualikan dari Git. Simulasi Docker 12 detik menghasilkan 1.200 paket bersama berlabel sintetis dan 12 tes host lulus. [Perintah build, simulasi, dan uji boot](docs/docker-espnow.md).
+
+Build Docker ARM64 lulus untuk TX, RX-A, dan RX-B. Identitas dan checksum ketiga profil telah diperiksa. QEMU 9.2.2 memuat aplikasi untuk ketiga peran dan backtrace menunjukkan eksekusi mencapai `app_main`. Semua peran berhenti dengan `ESP_ERR_INVALID_ARG` pada tahap konfigurasi Wi-Fi. Pilot radio fisik masih menunggu.

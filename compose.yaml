@@ -1,0 +1,27 @@
+name: espnow-csi-pilot
+
+services:
+  firmware:
+    build:
+      context: .
+      target: firmware
+    environment:
+      IDF_CCACHE_ENABLE: '1'
+    volumes:
+      - ./runs/docker:/out
+
+  simulator:
+    build:
+      context: .
+      target: simulator
+    network_mode: none
+    volumes:
+      - ./runs/docker:/out
+
+  qemu:
+    build:
+      context: .
+      target: qemu
+    network_mode: none
+    volumes:
+      - ./runs/docker:/out
